@@ -1,0 +1,62 @@
+{% extends 'customers/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <style>
+        body{
+        background-image:url('/static/customers/login_background.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        }
+    </style>
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'login' %}">Login</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div style="background-color: crimson;margin-top: 100px;text-align: center;width:auto">
+  {% for message in messages %}
+    <div class="alert {{ message.tags }} text-success alert-dismissible" role="alert">
+      <button type="button" class="close text-info" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+     {{ message }}
+     </div>
+  {% endfor %} 
+</div>
+    <div class="container text-center" style="width:300px;border:2px solid green;margin-top:100px;padding:20px;">
+      <div class="text-center">
+            <strong style="font-size:30px;border-bottom:3px solid red;" class="text-light" >Login</strong>
+        </div><br>
+        <form method="post">
+            {% csrf_token %}
+            <strong class="text-danger">{{error }}</strong>
+            {% for field in form %}
+            <div class="fieldWrapper">
+                <strong class="text-success">{{field.label_tag}}</strong>
+                {{ field }}
+                {% if field.help_text  %}
+                <small>{{ field.help_text|safe }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+             <button class="btn btn-primary rounded" type="submit">Sign in</button>
+        </form>
+        <div class="border-top pt-3 mt-2">
+            <small class="text-muted">
+              Don't have an account?<a class="ml-2" href="{% url 'register' %}">Sign Up</a>
+            </small>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'customers/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <script>
+        $(function() {
+            $('.selectpicker').selectpicker();
+        });
+    </script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Admin</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+             <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin' %}">Tickets</a>
+                </li>
+                 <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'admin_ticket' %}">Create Ticket</a>
+                </li>
+                 <li class="nav-item" style="margin-left:780px;">
+                    <a class="nav-link" href="{% url 'technician_signup' %}">Create Technician</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="jumbotron mt-2">
+        <strong class="text-danger" style="text-align:center;">.{{error}}</strong>
+        <div class="container text-center" style="border:1px solid red;margin-bottom:20px;margin-top:20px;background-color:#8FBC8F">
+            <div class="text-center">
+                <strong style="font-size:30px;border-bottom:3px solid red;" >Ticket</strong>
+            </div>
+            <br>
+           <form action="/webadmin/ticket/" method="post">
+                {% csrf_token %}
+               <div>
+                    <h6>Customer name*</h6>
+                    <select class="selectpicker" data-live-search="true" name="dropdown">
+                        <option data-tokens="Select customer">Select Customer</option>
+                        {% for customer in customers %}
+                            <option data-tokens="mustard" value="{{customer.username}}">{{customer}}</option>
+                        {% endfor %}
+                    </select>
+               </div>
+               <br>
+                <div id="div_id_content" class="form-group">
+                    <label for="id_content" class=" requiredField">Enter the problem<span class="asteriskField">*</span> </label>
+                    <div class=""> <input type="text" name="content" maxlength="100" class="textinput textInput form-control" required="" id="id_content"> </div>
+                </div>
+               <br>
+               <div id="div_id_technicians" class="form-group">
+                   <h6 class="text-dark text-center">Available Technicians*</h6>
+                   {% for technician in technicians %}
+                        <div class="container" >
+                            <input type="radio" name="tech" id="technician{{ forloop.counter }}" value="{{ technician.username}}">
+                                <label for="technician{{ forloop.counter }}">{{ technician }}</label><br>
+                        </div>
+                   {% endfor %}
+               </div>
+                <input class="btn btn-outline-primary ml-3" type="submit" value="Assign">
+                <br><br>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+<!-- <select name="siteID" id="siteID" class="abcd">
+                       <option value="" disabled selected>Select the User</option>
+                       {% for customer in customers %}
+                            <option value="{{customer.username}}">{{customer.username}}</option>
+                       {% endfor %}
+                    </select> -->

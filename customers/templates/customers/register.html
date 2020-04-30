@@ -1,0 +1,57 @@
+{% extends 'customers/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+     <style>
+        body{
+        background-image:url('/static/customers/login_background.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        }
+    </style>
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'register' %}">Register</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+    {{messages}}
+    <div class="container text-center" style="width:350px;border:2px solid green;margin-top:100px;padding:15px;">
+        <div class="text-center">
+            <strong style="font-size:30px;border-bottom:3px solid red;" class="text-light" >Sign Up</strong>
+        </div><br>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div>
+                <i class="text-danger">{{ field.errors }}</i>
+                <strong class="text-success">{{field.label_tag}}</strong>
+                <div>{{ field }}</div>
+                {% if field.help_text  %}
+                <br>
+                <small class="text-light">{{ field.help_text|safe }}</small>
+                {% endif %}
+            </div>
+            <br>
+        {% endfor %}
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Sign up</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Already have an account?<a class="ml-2" href="{% url 'login' %}">Sign in</a>
+            </small>
+        </div>
+    </div>
+{% endblock %}

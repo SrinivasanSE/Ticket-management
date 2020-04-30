@@ -1,0 +1,81 @@
+{% extends 'customers/base.html' %}
+{% block content %}
+<style>
+    body{
+        background-color:#F5F5F5;
+        }
+</style>
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Customer</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'customerhome' %}">Create Ticket</a>
+      </li>
+         <li class="nav-item active">
+        <a class="nav-link" href="{% url 'customerquery' %}">Tickets</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{% if length is not 0 %}
+<div >
+    <div class="container" style="margin-top:150px;background-color:#ffffff;">
+         <div class="text-center">
+             <strong style="font-size:30px;border-bottom:3px solid red;" class="text-dark" >Ticket details</strong>
+         </div><br>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover ">
+                <thead>
+                    <tr style="color:#555;text-align:center;">
+
+                            <th>No</th>
+                            <th>Problem</th>
+                            <th>Submitted date and time</th>
+                            <th>Assigned to</th>
+                            <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                           {% for ticket in Tickets %}
+                                <tr  class=" bg-dark text-light text-center">
+                                    <td>{{forloop.counter}}</td>
+                                    <td title="ticket">{{ticket.content}}</td>
+                                    <td>{{ticket.time|date:"F d, Y,P"}}</td>
+                                    {% if ticket.technician %}
+                                        <td>{{ticket.technician}}</td>
+                                    {% else %}
+                                        <td class="text-danger">Not yet assigned</td>
+                                    {% endif %}
+                                    {% if ticket.status == "resolved" %}
+                                        <td title="status" style="color:green;">{{ticket.status}}</td>
+                                    {% elif ticket.status == "Technician assigned" %}
+                                        <td title="status" style="color:yellow;">{{ticket.status}}</td>
+                                    {% else %}
+                                        <td title="status" style="color:red;">{{ticket.status}}</td>
+                                    {% endif %}
+
+                                </tr>
+                           {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="jumbotron text-center mt-3">
+    <strong>You have not raised any tickets</strong>
+</div>
+{% endif %}
+{% endblock %}

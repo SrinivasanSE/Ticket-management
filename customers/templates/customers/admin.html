@@ -1,0 +1,107 @@
+{% extends 'customers/base.html' %}
+{% block content %}
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Admin</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+             <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'admin' %}">Tickets</a>
+                </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_ticket' %}"> Create Ticket</a>
+                </li>
+                 <li class="nav-item" style="margin-left:780px;">
+                    <a class="nav-link" href="{% url 'technician_signup' %}">Create Technician</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+{% if length is 0 %}
+    <div class="jumbotron text-info text-center" style="margin-top:100px;">
+            <h3>No queries raised by customers!</h3>
+    </div>
+
+{% else %}
+    <div class="jumbotron" >
+        <div class="container bg-light" style="margin-top:100px;">
+            <div class="text-center">
+                    <strong style="font-size:30px;border-bottom:3px solid red;" class="text-dark" >Ticket details</strong>
+            </div><br>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover ">
+                    <thead>
+                        <tr style="color:#555;text-align:center;">
+                            <th>No</th>
+                            <th>Problem</th>
+                            <th>Raised By</th>
+                            <th>Assigned To</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in tickets %}
+                            <tr  class=" bg-dark text-light text-center">
+                                <td>{{forloop.counter}}</td>
+                                <td title="ticket">{{ticket.content}}</td>
+                                <td title="ticket">{{ticket.user}}</td>
+                                {% if ticket.technician is None%}
+                                    <td class="text-danger">Not yet assigned</td>
+                                {% else %}
+                                    <td>{{ticket.technician}}</td>
+                                {% endif %}
+                                {% if ticket.status == "resolved" %}
+                                    <td title="status" style="color:green;">{{ticket.status}}</td>
+                                {% elif ticket.status == "Technician assigned" %}
+                                    <td title="status" style="color:yellow;">{{ticket.status}}</td>
+                                {% else %}
+                                    <td title="status" style="color:red;">{{ticket.status}}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endif %}
+    {{error}}
+    {% for ticket in tickets %}
+        {% if ticket.status == "pending" %}
+        <div class="container" style="border:1px solid red;margin-bottom:20px;margin-top:20px;">
+            <br>
+            <form action="{% url 'ticketassign' ticket.id %}" method="post">
+                {% csrf_token %}
+                {{forloop.counter}})<mark class="bg-info">Ticket:</mark>  {{ticket}}
+                <span class="badge text-danger">Pending</span>
+                <br>
+                <hr>
+                <u class="ml-4">Available technicians</u><br>
+
+                {% for technician in technicians %}
+                    <div class="container ml-4 ">
+
+                        <input type="radio" name="tech" id="technician{{ forloop.counter }}" value="{{ technician.username}}">
+                        <label for="technician{{ forloop.counter }}">{{ technician }}</label><br>
+                    </div>
+                {% endfor %}
+                <br>
+                <input class="btn btn-success ml-3" type="submit" value="Assign">
+                <br><br>
+            </form>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+{% endblock %}
